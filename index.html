@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#191D1B">
+
+  <!-- Tema día/noche: se aplica antes del primer pintado para evitar parpadeos -->
+  <script src="js/tema.js"></script>
+  <title>Restauradores de la Memoria | Colegio Tom Adams IED</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2097/2097276.png">
+
+  <!-- Fuentes e Íconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SDK Oficial de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- NAVBAR CON TODAS LAS SECCIONES -->
+  <header>
+    <h1><i class="fa-solid fa-monument"></i> Restauradores de la Memoria</h1>
+    <nav id="menu-principal" aria-label="Principal">
+      <ul>
+        <li><a href="#inicio"><i class="fa-solid fa-house"></i> Inicio</a></li>
+        <li><a href="#proyecto"><i class="fa-solid fa-book-open"></i> Proyecto</a></li>
+        <li><a href="#museo"><i class="fa-solid fa-cube"></i> Museo 3D</a></li>
+        <li><a href="#salidas"><i class="fa-solid fa-location-dot"></i> Salidas</a></li>
+        <li><a href="#fechas"><i class="fa-solid fa-calendar-days"></i> Fechas</a></li>
+        <li><a href="#eventos"><i class="fa-solid fa-bullhorn"></i> Eventos</a></li>
+        <li><a href="#premios"><i class="fa-solid fa-trophy"></i> Premios</a></li>
+        <li><a href="#alianzas"><i class="fa-solid fa-handshake"></i> Alianzas</a></li>
+        <li><a href="#galeria"><i class="fa-solid fa-images"></i> Galería</a></li>
+        <li><a href="#gestion"><i class="fa-solid fa-database"></i> Gestión DB</a></li>
+        <li><a href="#contacto"><i class="fa-solid fa-envelope"></i> Contacto</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="theme-toggle" id="btn-tema" role="switch" aria-checked="false" aria-label="Modo noche" title="Cambiar entre modo día y modo noche">
+        <i class="fa-solid fa-sun" aria-hidden="true"></i>
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="menu-toggle" id="btn-menu" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO BANNER -->
+  <div class="hero" id="inicio">
+    <span class="hero-badge">Colegio Tom Adams IED</span>
+    <h2>Voces que se resisten al silencio</h2>
+    <p>Portal Institucional y Galería Virtual Inmersiva dedicada a la preservación de la memoria histórica y la convivencia escolar.</p>
+    <a href="#museo" class="btn-museo"><i class="fa-solid fa-vr-cardboard"></i> Explorar Galería 3D</a>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. PROYECTO -->
+    <section id="proyecto">
+      <h2 class="title"><i class="fa-solid fa-circle-info"></i> ¿Qué es Restauradores de la Memoria?</h2>
+      <p>Es una iniciativa pedagógica del Colegio Tom Adams IED para divulgar y gestionar la construcción de memoria histórica, convivencia y paz a través de expresiones artísticas, salidas pedagógicas y tecnologías inmersivas.</p>
+    </section>
+
+    <!-- 2. MUSEO 3D -->
+    <section id="museo">
+      <h2 class="title"><i class="fa-solid fa-cubes"></i> 2. Museo Escolar de la Memoria (Virtual 3D)</h2>
+      <p>Explora la sala interactiva tridimensional. Usa el mouse para orientar la vista y las teclas <strong>W, A, S, D</strong> para desplazarte por la galería.</p>
+
+      <div class="iframe-wrapper">
+        <iframe src="museo3d.html" title="Museo Virtual 3D"></iframe>
+      </div>
+    </section>
+
+    <!-- 3. SALIDAS -->
+    <section id="salidas">
+      <h2 class="title"><i class="fa-solid fa-route"></i> 3. Salidas Pedagógicas</h2>
+      <div class="grid">
+        <div class="card">
+          <img class="card-img" src="https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=600&q=80" alt="Centro de Memoria">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-landmark"></i> Centro de Memoria</h3>
+            <p>Visitas pedagógicas guiadas al Eje de la Memoria, Paz y Reconciliación.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=600&q=80" alt="Museo Autoconstruida">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-city"></i> Museo Autoconstruida</h3>
+            <p>Recorridos territoriales comunitarios en la localidad de Ciudad Bolívar.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80" alt="Casa MAFAPO">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-heart-pulse"></i> Casa MAFAPO</h3>
+            <p>Encuentros de memoria viva y diálogo directo con la organización MAFAPO.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FECHAS -->
+    <section id="fechas">
+      <h2 class="title"><i class="fa-solid fa-calendar-check"></i> 4. Fechas Conmemorativas</h2>
+      <ul class="styled-list">
+        <li><strong>12 de Febrero:</strong><br>Día de las Manos Rojas</li>
+        <li><strong>9 de Abril:</strong><br>Día Nacional de la Memoria y Solidaridad con las Víctimas</li>
+        <li><strong>25 de Mayo:</strong><br>Memorias Corporales</li>
+        <li><strong>31 de Agosto:</strong><br>Jornadas de No Violencia</li>
+      </ul>
+    </section>
+
+    <!-- 5. EVENTOS -->
+    <section id="eventos">
+      <h2 class="title"><i class="fa-solid fa-masks-theater"></i> 5. Visitas y Eventos Culturales</h2>
+      <p>Presentaciones teatrales, monólogos reflexivos, muestras artísticas con la Batucada Estudiantil y las jornadas institucionales "Museo de la Memoria a la Calle".</p>
+    </section>
+
+    <!-- 6. PREMIOS -->
+    <section id="premios">
+      <h2 class="title"><i class="fa-solid fa-award"></i> 6. Reconocimientos Obtenidos</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-star"></i> Gala de los Mejores (SED)</h3>
+            <p>Premio categoría "El colegio, la Comunidad y la Ciudad" con incentivo de $3.800.000.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-seedling"></i> Alcaldía de Kennedy</h3>
+            <p>Apoyo a Semilleros de Paz por $7.600.000 para desarrollo tecnológico y comunitario.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-hands-holding-circle"></i> Entornos Inspiradores</h3>
+            <p>Reconocimiento Categoría 5 "Aliados por un entorno inspirador".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. ALIANZAS -->
+    <section id="alianzas">
+      <h2 class="title"><i class="fa-solid fa-building-columns"></i> 7. Alianzas Institucionales</h2>
+      <p>Trabajo articulado con el Centro Nacional de Memoria Histórica (CNMH), Escuela Tecnológica Instituto Técnico Central (ETITC), Museo Nacional de Colombia, Universidad Javeriana y Secretaría de Educación del Distrito (SED).</p>
+    </section>
+
+    <!-- 8. GALERÍA -->
+    <section id="galeria">
+      <h2 class="title"><i class="fa-solid fa-photo-film"></i> 8. Galería Multimedia</h2>
+      <p>Registro de exposiciones artísticas en cómic, puestas en escena teatrales y episodios radiales tipo podcast desarrollados por la comunidad escolar.</p>
+    </section>
+
+    <!-- SEPARADOR Y BOTÓN DESPLEGABLE DE GESTIÓN -->
+    <div class="separador-seccion" id="gestion">
+      <h2>ESPACIO PARA FORMULARIOS Y GESTIÓN</h2>
+      <p>Accede al panel interactivo para registrar obras, eventos, actividades y evidencias directamente en Supabase.</p>
+      <button class="btn-abrir-form" id="btnToggleFormularios" onclick="toggleFormularios()">
+        <i class="fa-solid fa-folder-plus"></i> Desplegar Formularios de Gestión
+      </button>
+    </div>
+
+    <!-- SECCIÓN DE FORMULARIOS MÚLTIPLES (Oculta al inicio) -->
+    <div id="seccion-formularios">
+      <section>
+        <h2 class="title"><i class="fa-solid fa-palette"></i> Registrar Obra / Exposición</h2>
+        <form id="form-obras">
+          <label>Título de la Obra *</label>
+          <input type="text" id="obra_titulo" required placeholder="Ej. Retratos de la Resiliencia">
+          <label>Autor</label>
+          <input type="text" id="obra_autor" placeholder="Nombre del autor o grupo">
+          <label>Descripción</label>
+          <textarea id="obra_desc" rows="3" placeholder="Detalles de la obra..."></textarea>
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Obra en DB</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="title"><i class="fa-solid fa-calendar-plus"></i> Registrar Evento</h2>
+        <form id="form-eventos">
+          <label>Título del Evento *</label>
+          <input type="text" id="evento_titulo" required placeholder="Ej. Conversatorio de Memoria">
+          <label>Descripción</label>
+          <textarea id="evento_desc" rows="3" placeholder="Descripción del evento..."></textarea>
+          <label>Fecha y Hora</label>
+          <input type="datetime-local" id="evento_fecha">
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Evento en DB</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="title"><i class="fa-solid fa-list-check"></i> Registrar Actividad</h2>
+        <form id="form-actividades">
+          <label>Nombre de la Actividad *</label>
+          <input type="text" id="act_nombre" required placeholder="Ej. Talleres de Modelado 3D">
+          <label>Estado</label>
+          <select id="act_estado">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Proceso">En Proceso</option>
+            <option value="Completado">Completado</option>
+          </select>
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Actividad en DB</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="title"><i class="fa-solid fa-file-arrow-up"></i> Registrar Evidencia</h2>
+        <form id="form-evidencias">
+          <label>Título de la Evidencia *</label>
+          <input type="text" id="ev_titulo" required placeholder="Ej. Fotos del Laboratorio">
+          <label>Enlace del Archivo / URL</label>
+          <input type="text" id="ev_url" placeholder="https://...">
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Evidencia en DB</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- 9. CONTACTO Y REGISTRO DE VISITANTES -->
+    <section id="contacto">
+      <h2 class="title"><i class="fa-solid fa-address-card"></i> 9. Contacto y Registro de Visitantes</h2>
+      <form id="formVisita">
+        <label for="nombre">Nombre Completo *</label>
+        <input type="text" id="nombre" placeholder="Tu nombre completo" required>
+
+        <label for="correo">Correo Electrónico *</label>
+        <input type="email" id="correo" placeholder="ejemplo@correo.com" required>
+
+        <label for="inst">Institución / Entidad</label>
+        <input type="text" id="inst" placeholder="Ej. ETITC - Colegio Tom Adams">
+
+        <button type="submit" class="btn-museo"><i class="fa-solid fa-paper-plane"></i> Registrar Visita en Supabase</button>
+      </form>
+
+      <div id="status-msg" class="status-msg"></div>
+
+      <h3 style="color: var(--text-title); margin-top: 2rem; font-size: 1.1rem;"><i class="fa-solid fa-users"></i> Visitantes Registrados Recientemente</h3>
+      <ul id="visitor-list" class="visitor-list">
+        <li>Cargando visitantes...</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Portal Web Restauradores de la Memoria — Colegio Tom Adams IED</p>
+  </footer>
+
+  <script>
+    // Función para desplegar u ocultar los formularios de gestión
+    function toggleFormularios() {
+      const seccion = document.getElementById('seccion-formularios');
+      const btn = document.getElementById('btnToggleFormularios');
+
+      if (seccion.style.display === 'block') {
+        seccion.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-folder-plus"></i> Desplegar Formularios de Gestión';
+      } else {
+        seccion.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-folder-minus"></i> Ocultar Formularios de Gestión';
+        seccion.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // CONEXIÓN CON SUPABASE
+    const SUPABASE_URL = 'https://hfueuperjaqgarcdwfet.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_72QMWHhecQBXyJ_Whng7Vw_MFT-Bfac';
+
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const form = document.getElementById('formVisita');
+    const statusMsg = document.getElementById('status-msg');
+    const visitorList = document.getElementById('visitor-list');
+
+    // Cargar visitantes
+    async function loadVisitors() {
+      const { data, error } = await _supabase
+        .from('Visitantes')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        console.error('Error al cargar la lista:', error.message);
+        visitorList.innerHTML = '<li style="color:#ef4444;">Error al conectar con la base de datos.</li>';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        visitorList.innerHTML = '<li>No hay visitantes registrados todavía.</li>';
+        return;
+      }
+
+      visitorList.innerHTML = data.map(v => `
+        <li class="visitor-item">
+          <div>
+            <span class="visitor-name">${v.nombre}</span>
+            <span class="visitor-inst">${v.institucion || 'Sin institución'}</span>
+          </div>
+          <span class="visitor-date">${new Date(v.created_at).toLocaleDateString('es-CO')}</span>
+        </li>
+      `).join('');
+    }
+
+    // Registrar Visitante
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const correo = document.getElementById('correo').value;
+      const institucion = document.getElementById('inst').value;
+
+      statusMsg.className = 'status-msg';
+      statusMsg.textContent = 'Guardando en Supabase...';
+      statusMsg.style.display = 'block';
+
+      const { data, error } = await _supabase
+        .from('Visitantes')
+        .insert([{ nombre, correo, institucion }]);
+
+      if (error) {
+        statusMsg.className = 'status-msg status-error';
+        statusMsg.textContent = 'Error al registrar: ' + error.message;
+      } else {
+        statusMsg.className = 'status-msg status-success';
+        statusMsg.textContent = '¡Registro completado con éxito!';
+        form.reset();
+        loadVisitors();
+      }
+    });
+
+    // Guardar Obra
+    document.getElementById('form-obras').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('obras').insert([{
+        titulo: document.getElementById('obra_titulo').value,
+        autor: document.getElementById('obra_autor').value,
+        descripcion: document.getElementById('obra_desc').value
+      }]);
+      if (error) alert('Error al guardar obra: ' + error.message);
+      else { alert('¡Obra guardada con éxito en Supabase!'); document.getElementById('form-obras').reset(); }
+    });
+
+    // Guardar Evento
+    document.getElementById('form-eventos').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('eventos').insert([{
+        titulo_evento: document.getElementById('evento_titulo').value,
+        descripcion: document.getElementById('evento_desc').value,
+        fecha: document.getElementById('evento_fecha').value
+      }]);
+      if (error) alert('Error al guardar evento: ' + error.message);
+      else { alert('¡Evento guardado con éxito en Supabase!'); document.getElementById('form-eventos').reset(); }
+    });
+
+    // Guardar Actividad
+    document.getElementById('form-actividades').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('actividades').insert([{
+        nombre_actividad: document.getElementById('act_nombre').value,
+        estado: document.getElementById('act_estado').value
+      }]);
+      if (error) alert('Error al guardar actividad: ' + error.message);
+      else { alert('¡Actividad guardada con éxito en Supabase!'); document.getElementById('form-actividades').reset(); }
+    });
+
+    // Guardar Evidencia
+    document.getElementById('form-evidencias').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('evidencias').insert([{
+        titulo: document.getElementById('ev_titulo').value,
+        enlace_archivo: document.getElementById('ev_url').value
+      }]);
+      if (error) alert('Error al guardar evidencia: ' + error.message);
+      else { alert('¡Evidencia guardada con éxito en Supabase!'); document.getElementById('form-evidencias').reset(); }
+    });
+
+    loadVisitors();
+  </script>
+</body>
+</html>

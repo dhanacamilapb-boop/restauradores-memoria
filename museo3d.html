@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Museo Escolar 3D - Restauradores de la Memoria</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2097/2097276.png">
+  <!-- Importar fuente moderna desde Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: 'Rajdhani', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <a-scene embedded style="width: 100%; height: 100%;">
+    <a-assets>
+      <a-asset-item id="modelo-1" src="assets/modelos/modelo1.glb"></a-asset-item>
+      <a-asset-item id="modelo-2" src="assets/modelos/modelo2.glb"></a-asset-item>
+      <a-asset-item id="modelo-3" src="assets/modelos/modelo3.glb"></a-asset-item>
+      <a-asset-item id="modelo-4" src="assets/modelos/modelo4.glb"></a-asset-item>
+      <a-asset-item id="modelo-5" src="assets/modelos/modelo5.glb"></a-asset-item>
+      <a-asset-item id="modelo-6" src="assets/modelos/modelo6.glb"></a-asset-item>
+      <a-asset-item id="modelo-7" src="assets/modelos/modelo7.glb"></a-asset-item>
+      <a-asset-item id="modelo-8" src="assets/modelos/model8.glb"></a-asset-item>
+      <a-asset-item id="modelo-9" src="assets/modelos/model9.glb"></a-asset-item>
+      <img id="mural-paz" src="assets/mural-paz.jpg">
+    </a-assets>
+
+    <!-- Cámara ajustada en 0 1 0 -->
+    <a-entity id="rig" position="0 1 0">
+      <a-camera look-controls wasd-controls="fly: false">
+        <a-cursor color="#ef4444"></a-cursor>
+      </a-camera>
+    </a-entity>
+
+    <!-- Iluminación -->
+    <a-light type="ambient" color="#ffffff" intensity="0.8"></a-light>
+    <a-light type="directional" color="#ffffff" intensity="0.6" position="0 6 5"></a-light>
+    <a-light type="directional" color="#94a3b8" intensity="0.3" position="-4 3 -2"></a-light>
+    <a-light type="directional" color="#94a3b8" intensity="0.3" position="4 3 -2"></a-light>
+    <a-light type="point" color="#e9d5ff" intensity="1.5" distance="8" position="0 2.5 0"></a-light>
+
+    <!-- LUCES EXTRA ESPECÍFICAS PARA LOS MODELOS -->
+    <a-light type="point" color="#38bdf8" intensity="2.2" distance="10" position="0 3 0"></a-light>
+    <a-light type="point" color="#ffffff" intensity="1.8" distance="12" position="0 4 -3"></a-light>
+
+    <a-sky color="#0b0f19"></a-sky>
+
+    <!-- Suelo circular ampliado (Radio 9m) -->
+    <a-cylinder position="0 0 0" radius="9" height="0.1" color="#1e293b" metalness="0.2" roughness="0.5"></a-cylinder>
+
+    <!-- Mural de fondo más amplio -->
+    <a-plane position="0 3.5 -8.5" rotation="0 0 0" width="14" height="3.5" material="src: #mural-paz; shader: flat; npot: true"></a-plane>
+    <a-plane position="0 3.5 -8.51" width="14.4" height="3.7" color="#38bdf8"></a-plane>
+
+    <a-plane position="0 5.5 -8.4" width="9" height="0.9" color="#1e293b">
+      <a-text value="GALERIA RESTAURADORES DE LA MEMORIA" align="center" color="#38bdf8" width="8" font="exo2bold" position="0 0 0.01"></a-text>
+    </a-plane>
+
+    <!-- ==================================================== -->
+    <!-- DISTRIBUCIÓN CIRCULAR AMPLIADA (Radio R = 6.0m)      -->
+    <!-- ==================================================== -->
+
+    <!-- Modelo 1 (0°) -->
+    <a-entity position="0 0 -6">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity gltf-model="#modelo-1" position="0 1.2 0" scale="2.5 2.5 2.5" rotation="0 275 0"></a-entity>
+      <a-box position="0 0.25 0.9" rotation="-30 0 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 1" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 2 (40°) -->
+    <a-entity position="3.86 0 -4.60">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity gltf-model="#modelo-2" position="0 1.5 0" scale="1.5 1.5 1.5" rotation="0 -135 0"></a-entity>
+      <a-box position="-0.58 0.25 0.69" rotation="-30 -40 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 2" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 3 (80°) -->
+    <a-entity position="5.91 0 -1.04">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity gltf-model="#modelo-3" position="0 1.2 0" scale="2 2 2" rotation="0 -190 0"></a-entity>
+      <a-box position="-0.89 0.25 0.16" rotation="-30 -80 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 3" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 4 (120°) -->
+    <a-entity position="5.20 0 3.00">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity gltf-model="#modelo-4" position="0 1.2 0" scale="2 2 2" rotation="0 -225 0"></a-entity>
+      <a-box position="-0.78 0.25 -0.45" rotation="-30 -120 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 4" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 5 (160°) -->
+    <a-entity position="2.05 0 5.64">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity gltf-model="#modelo-5" position="0 1.8 0" scale="2 2 2" rotation="0 -260 0"></a-entity>
+      <a-box position="-0.31 0.25 -0.85" rotation="-30 -160 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 5" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 6 (200°) -->
+    <a-entity position="-2.05 0 5.64">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity gltf-model="#modelo-6" position="-0.2 1.8 0" scale="2 2 2" rotation="0 -310 0"></a-entity>
+      <a-box position="0.31 0.25 -0.85" rotation="-30 -200 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 6" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 7 (240°) -->
+    <a-entity position="-5.20 0 3.00">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity gltf-model="#modelo-7" position="0 1.5 0" scale="2 2 2" rotation="0 -340 0"></a-entity>
+      <a-box position="0.78 0.25 -0.45" rotation="-30 -240 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 7" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 8 (280°) -->
+    <a-entity position="-5.91 0 -1.04">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity gltf-model="#modelo-8" position="0 2 0" scale="2 2 2" rotation="0 -20 0"></a-entity>
+      <a-box position="0.89 0.25 0.16" rotation="-30 -280 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 8" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Modelo 9 (320°) -->
+    <a-entity position="-3.86 0 -4.60">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity gltf-model="#modelo-9" position="0 1.9 0" scale="2 2 2" rotation="0 -60 0"></a-entity>
+      <a-box position="0.58 0.25 0.69" rotation="-30 -320 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 9" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+  </a-scene>
+
+</body>
+</html>
