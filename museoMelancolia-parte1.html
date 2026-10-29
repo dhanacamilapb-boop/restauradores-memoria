@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Museo Melancolía - Parte 1</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2097/2097276.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #0b0f19; font-family: 'Rajdhani', sans-serif;
+    }
+    #loader {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #0b0f19; z-index: 9999; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; color: white; transition: opacity 0.5s ease;
+    }
+    .spinner {
+      width: 60px; height: 60px; border: 5px solid rgba(56, 189, 248, 0.2);
+      border-top: 5px solid #38bdf8; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    #info-panel {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95); border: 1px solid #38bdf8; padding: 14px 24px;
+      border-radius: 12px; color: white; display: none; z-index: 100; text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+    }
+    #info-panel button {
+      background: #38bdf8; border: none; padding: 8px 16px; margin: 4px;
+      color: #0b0f19; font-weight: bold; border-radius: 6px; cursor: pointer; font-family: 'Rajdhani', sans-serif;
+    }
+    #info-panel button.btn-cerrar { background: #ef4444; color: white; }
+  </style>
+  <script>
+    
+    // Componente A-Frame para manejar clics interactivos
+    AFRAME.registerComponent('click-obra', {
+      schema: {
+        nombre: {type: 'string', default: ''},
+        modelId: {type: 'string', default: ''}
+      },
+      init: function () {
+        var data = this.data;
+        this.el.addEventListener('click', function () {
+          window.seleccionarObra(data.nombre, data.modelId);
+        });
+      }
+    });
+    AFRAME.registerComponent('girar-al-mirar', {
+      init: function () {
+        this.mirando = false;
+        this.el.addEventListener('mouseenter', () => { this.mirando = true; });
+        this.el.addEventListener('mouseleave', () => { this.mirando = false; });
+      },
+      tick: function (time, timeDelta) {
+        if (this.mirando) {
+      // Ajusta '0.05' si quieres que gire más rápido o más lento
+          this.el.object3D.rotation.y += 0.03; 
+        }
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- PANTALLA DE CARGA PROGRESIVA -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <h2>Cargando Museo e Inmersión 3D...</h2>
+    <p style="color: #94a3b8;">Por favor espera un momento</p>
+  </div>
+
+  <!-- PANEL FLOTANTE AL CLICKEAR UNA OBRA -->
+  <div id="info-panel">
+    <h3 id="obra-titulo" style="margin:0 0 5px 0; color:#38bdf8;">Obra Seleccionada</h3>
+    <p style="margin:0 0 8px 0; font-size: 0.9rem; color:#cbd5e1;">Has seleccionado este modelo 3D de la sala.</p>
+    <button onclick="verModeloSolo()">Abrir Archivo 3D</button>
+    <button class="btn-cerrar" onclick="cerrarPanel()">Cerrar</button>
+  </div>
+
+  <a-scene embedded vr-mode-ui="enabled: true" style="width: 100%; height: 100%;">
+    <a-assets>
+      <a-asset-item id="obra1-s1" src="assets/modelos/obra1-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra2-s1" src="assets/modelos/obra2-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra3-s1" src="assets/modelos/obra3-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra4-s1" src="assets/modelos/obra4-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra5-s1" src="assets/modelos/obra5-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra6-s1" src="assets/modelos/obra6-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra7-s1" src="assets/modelos/obra7-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra8-s1" src="assets/modelos/obra8-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra9-s1" src="assets/modelos/obra9-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra10-s1" src="assets/modelos/obra10-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra11-s1" src="assets/modelos/obra11-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra12-s1" src="assets/modelos/obra12-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra13-s1" src="assets/modelos/obra13-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra14-s1" src="assets/modelos/obra14-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra15-s1" src="assets/modelos/obra15-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra16-s1" src="assets/modelos/obra16-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra17-s1" src="assets/modelos/obra17-sala1.glb"></a-asset-item>
+      <a-asset-item id="obra-especial" src="assets/modelos/obraMuseoNacional-sala1.glb"></a-asset-item>
+      <img id="mural-paz" src="assets/diego-alberto-tamayo.jpg">
+    </a-assets>
+
+    <!-- CÁMARA CON CURSOR INTERACTIVO (DETECTA CLASES .clickable Y .girable) -->
+    <a-entity id="rig" position="0 0.6 0">
+      <a-camera id="camara-principal" look-controls wasd-controls="fly: false">
+        <a-cursor color="#ef4444" fuse="false" raycaster="objects: .clickable, .girable"></a-cursor>
+      </a-camera>
+    </a-entity>
+
+    <!-- ILUMINACIÓN -->
+    <a-light type="ambient" color="#ffffff" intensity="1.2"></a-light>
+    <a-light type="directional" color="#ffffff" intensity="0.9" position="0 8 5"></a-light>
+    <a-light type="point" color="#38bdf8" intensity="2.5" distance="15" position="0 4 0"></a-light>
+    <a-sky color="#0b0f19"></a-sky>
+
+    <!-- SUELO DEL MUSEO -->
+    <a-cylinder position="0 0 0" radius="12" height="0.1" color="#1e293b" metalness="0.2" roughness="0.5"></a-cylinder>
+
+    <a-plane position="0 3.5 -11.5" rotation="0 0 0" width="4.67" height="3.5" material="src: #mural-paz; shader: flat; npot: true"></a-plane>
+    <a-plane position="0 3.5 -11.51" width="16.4" height="3.7" color="#38bdf8"></a-plane>
+    <a-plane position="0 5.5 -11.4" width="9" height="0.9" color="#1e293b">
+      <a-text value="MUSEO MELANCOLIA - PARTE 1" align="center" color="#38bdf8" width="8" font="exo2bold" position="0 0 0.01"></a-text>
+    </a-plane>
+
+    <!-- DISTRIBUCIÓN SIMÉTRICA DE LAS 18 OBRAS CON SUS CILINDROS, LETREROS Y GIRO AL PASAR LA MIRA -->
+
+    <!-- Obra 1 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 1; modelId: #obra1-s1" position="-1.48 0 -8.37" rotation="0 -10 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra1-s1" position="0 1.5 0" rotation="0 270 0.3" scale="1.7 1.7 1.7"></a-entity>
+      <a-box position="0.3 0.28 1" rotation="-15 25 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 1" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 2 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 2; modelId: #obra2-s1" position="-4.25 0 -7.36" rotation="0 -30 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra2-s1" position="0 1.5 0" rotation="0 330 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="1 0.28 0.7" rotation="-20 60 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 2" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 3 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 3; modelId: #obra3-s1" position="-6.51 0 -5.46" rotation="0 -50 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra3-s1" position="0 1.6 0" rotation="0 360 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="1 0.25 0" rotation="-20 100 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 3" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 4 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 4; modelId: #obra4-s1" position="-7.99 0 -2.91" rotation="0 -70 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra4-s1" position="0 1.6 0" rotation="0 50  0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="0.8 0.25 -0.6" rotation="-20 140 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 4" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 5 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 5; modelId: #obra5-s1" position="-8.50 0 0.00" rotation="0 -90 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra5-s1" position="0 1.1 -0.2" rotation="0 90 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="0.2 0.25 -0.9" rotation="-20 180 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 5" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 6 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 6; modelId: #obra6-s1" position="-7.99 0 2.91" rotation="0 -110 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra6-s1" position="0 1.6 0" rotation="0 170 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="-0.7 0.25 -0.8" rotation="-20 215 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 6" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 7 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 7; modelId: #obra7-s1" position="-6.51 0 5.46" rotation="0 -130 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra7-s1" position="-0.2 1.7 0" rotation="-0.4 180 -0.2" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="-0.9 0.25 -0.2" rotation="-20 260 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 7" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 8 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 8; modelId: #obra8-s1" position="-4.25 0 7.36" rotation="0 -150 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra8-s1" position="0 1.7 0" rotation="0 190 0" scale="2 2 2"></a-entity>
+      <a-box position="-0.7 0.25 0.7" rotation="-20 -60 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 8" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 9 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 9; modelId: #obra9-s1" position="-1.48 0 8.37" rotation="0 -170 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra9-s1" position="0 1.4 0" rotation="0 250 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="-0.4 0.25 0.9" rotation="-20 -20 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 9" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+    <!-- Obra 10 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 10; modelId: #obra10-s1" position="1.48 0 8.37" rotation="0 170 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra10-s1" position="0 1.6 0" rotation="0 -80 0.2" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="0.4 0.25 0.9" rotation="-20 20 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 10" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text></a-box>
+    </a-entity>
+
+    <!-- Obra 11 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 11; modelId: #obra11-s1" position="4.25 0 7.36" rotation="0 150 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra11-s1" position="0 1.6 0" rotation="0 -60 0.2" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="0.7 0.25 0.7" rotation="-20 60 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 11" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text></a-box>
+    </a-entity>
+
+    <!-- Obra 12 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 12; modelId: #obra12-s1" position="6.51 0 5.46" rotation="0 130 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra12-s1" position="0.2 1.5 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="0.9 0.25 -0.2" rotation="-20 -260 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 12" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+    </a-entity>
+
+    <!-- Obra 13 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 13; modelId: #obra13-s1" position="7.99 0 2.91" rotation="0 110 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra13-s1" position="0 1.4 0" rotation="0 40 0.2" scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="0.7 0.25 -0.8" rotation="-20 -215 0" width="1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 13" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+    </a-entity>
+
+    <!-- Obra 14 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 14; modelId: #obra14-s1" position="8.50 0 0.00" rotation="0 90 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra14-s1" position="0 1.6 0" rotation="0 100 0.2"  scale="1.5 1.5 1.5"></a-entity>
+      <a-box position="-0.2 0.25 -0.9" rotation="-20 -180 0" width="1.1" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 14" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+    </a-entity>
+
+    <!-- Obra 15 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 15; modelId: #obra15-s1" position="7.99 0 -2.91" rotation="0 70 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra15-s1" position="0 1.4 0" rotation="0 -140 0.2" scale="0.7 0.7 0.7"></a-entity>
+      <a-box position="-0.8 0.25 -0.6" rotation="-20 -140 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 15" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+    </a-entity>
+
+    <!-- Obra 16 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 16; modelId: #obra16-s1" position="6.51 0 -5.46" rotation="0 50 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra16-s1" position="0 1.5 0" rotation="0 -90 0.2" scale="4 4 4"></a-entity>
+      <a-box position="-1 0.25 0" rotation="-20 -100 0" width="1.2" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 16" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+    </a-entity>
+
+    <!-- Obra 17 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 17; modelId: #obra17-s1" position="4.25 0 -7.36" rotation="0 30 0">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra17-s1" position="0 1.4 0" rotation="0 -62 0.2" scale="1 1 1"></a-entity>
+      <a-box position="-1 0.28 0.7" rotation="-20 -60 0" width="1.2" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 17" align="center" color="#ffffff" width="4.5" font="exo2bold" position="0 0 0.04"></a-text>
+    </a-entity>
+
+    <!-- Obra Museo Nacional -->
+    <a-entity class="clickable" click-obra="nombre: Obra Museo Nacional; modelId: #obra-especial" position="1.48 0 -8.37" rotation="0 10 0">
+      <a-cylinder position="0 0.4 0" radius="0.9" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.92" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#obra-especial" position="0 1.1 0" rotation="0 -110 0.2" scale="2 2 2"></a-entity>
+      <a-box position="-0.3 0.28 1" rotation="-15 -25 0" width="1.3" height="0.6" depth="0.05" color="#020617">
+        <a-text value="Obra Especial\nMuseo Nacional" align="center" color="#ffffff" width="3.5" font="exo2bold" position="0 0 0.04"></a-text>
+      </a-box>
+    </a-entity>
+
+  </a-scene>
+
+  <script>
+    let obraActualSeleccionada = "";
+
+    window.addEventListener('load', () => {
+      const scene = document.querySelector('a-scene');
+      if (scene.hasLoaded) {
+        ocultarLoader();
+      } else {
+        scene.addEventListener('loaded', ocultarLoader);
+      }
+    });
+
+    function ocultarLoader() {
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+      }
+    }
+
+    window.seleccionarObra = function(nombre, modelId) {
+      obraActualSeleccionada = modelId;
+      document.getElementById('obra-titulo').textContent = nombre;
+      document.getElementById('info-panel').style.display = 'block';
+    };
+
+    function cerrarPanel() {
+      document.getElementById('info-panel').style.display = 'none';
+    }
+
+    function verModeloSolo() {
+      if (!obraActualSeleccionada) return;
+      const assetItem = document.querySelector(obraActualSeleccionada);
+      if (assetItem) {
+        const srcUrl = assetItem.getAttribute('src');
+        window.open(srcUrl, '_blank');
+      }
+    }
+  </script>
+</body>
+</html>

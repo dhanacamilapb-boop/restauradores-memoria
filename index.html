@@ -3,62 +3,416 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#191D1B">
-
-  <!-- Tema día/noche: se aplica antes del primer pintado para evitar parpadeos -->
-  <script src="js/tema.js"></script>
   <title>Restauradores de la Memoria | Colegio Tom Adams IED</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2097/2097276.png">
 
   <!-- Fuentes e Íconos -->
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- SDK Oficial de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    /* ================= MODO CLARO / OSCURO ================= */
+  :root {
+    --bg-light: #f1f5f9;
+    --text-light: #0f172a;
+    --card-light: #ffffff;
+    --border-light: #cbd5e1;
+  }
+
+  [data-theme="light"] {
+    --bg-dark: var(--bg-light) !important;
+    --card-bg: var(--card-light) !important;
+    --card-border: var(--border-light) !important;
+    --text-main: #334155 !important;
+    --text-title: #0284c7 !important;
+  }
+
+  [data-theme="light"] .card,
+  [data-theme="light"] .styled-list li { background-color: var(--card-light); }
+  [data-theme="light"] .separador-seccion { background: var(--card-light); }
+  [data-theme="light"] .visitor-inst { color: #475569; }
+
+  .btn-tema {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .btn-tema:hover {
+    background: var(--primary-blue-hover);
+  }
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: #151c2c;
+      --card-border: #232d42;
+      --primary-blue: #3b82f6;
+      --primary-blue-hover: #2563eb;
+      --accent-red: #ef4444;
+      --accent-red-hover: #dc2626;
+      --text-main: #94a3b8;
+      --text-title: #f8fafc;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+      --shadow-md: 0 6px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    [id] { scroll-margin-top: 80px; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: rgba(11, 15, 25, 0.95);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 0.9rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-title);
+    }
+
+    header h1 i { color: var(--accent-red); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.82rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    nav a:hover { color: #ffffff; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, rgba(11, 15, 25, 0.92), rgba(30, 58, 138, 0.85)), 
+                  url('https://colegiotomadams.edu.co/wp-content/uploads/2021/09/cropped-header.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      padding: 6rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .hero-badge {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--accent-red);
+      color: #fca5a5;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero h2 { font-size: 2.8rem; margin: 0 0 1rem 0; font-weight: 800; color: #ffffff; }
+    .hero p { font-size: 1.15rem; color: #cbd5e1; max-width: 650px; margin: 0 auto; }
+
+    .btn-museo {
+      background-color: var(--accent-red);
+      color: white;
+      padding: 14px 32px;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-museo:hover {
+      background-color: var(--accent-red-hover);
+      transform: translateY(-2px);
+    }
+
+    .container { max-width: 1100px; margin: 3rem auto; padding: 0 1.5rem; }
+
+    section {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    h2.title {
+      color: var(--text-title);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+    }
+
+    h2.title i { color: var(--primary-blue); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      background-color: #1a2336;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--primary-blue); }
+
+    .card-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+    }
+
+    .card-content { padding: 1.25rem; }
+    .card-content h3 { margin: 0 0 0.5rem 0; color: var(--primary-blue); font-size: 1.05rem; }
+    .card-content p { color: var(--text-main); margin: 0; }
+
+    .styled-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: 15px;
+    }
+
+    .styled-list li {
+      background: #101726;
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-blue);
+      font-size: 0.95rem;
+      color: var(--text-title);
+    }
+
+    /* SEPARADOR Y BOTÓN DESPLEGABLE */
+    .separador-seccion {
+      background: linear-gradient(135deg, #151c2c, #1a2336);
+      border: 1px solid var(--card-border);
+      padding: 3rem;
+      text-align: center;
+      border-radius: 16px;
+      margin-bottom: 2.5rem;
+    }
+
+    .separador-seccion h2 { color: var(--text-title); margin-top: 0; font-size: 1.8rem; }
+    .separador-seccion p { color: var(--text-main); margin-bottom: 1.5rem; }
+
+    .btn-abrir-form {
+      background-color: var(--primary-blue);
+      color: white;
+      padding: 12px 28px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s;
+      font-size: 1rem;
+    }
+
+    .btn-abrir-form:hover { background-color: var(--primary-blue-hover); }
+
+    /* SECCIÓN DE FORMULARIOS */
+    #seccion-formularios {
+      display: none;
+    }
+
+    /* ESTILOS DE FORMULARIOS */
+    form label { font-weight: 600; font-size: 0.9rem; color: var(--text-title); display: block; margin-top: 10px; }
+    form input, form textarea, form select {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 16px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background-color: #0d1322;
+      color: #ffffff;
+      font-size: 0.95rem;
+    }
+
+    form input:focus, form textarea:focus, form select:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+    }
+
+    .status-msg {
+      display: none;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .status-success {
+      background-color: rgba(34, 197, 94, 0.15);
+      border: 1px solid #22c55e;
+      color: #4ade80;
+      display: block;
+    }
+
+    .status-error {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      display: block;
+    }
+
+    .visitor-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5rem;
+    }
+
+    .visitor-item {
+      padding: 0.9rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .visitor-item:last-child { border-bottom: none; }
+    .visitor-name { color: var(--text-title); font-weight: 600; }
+    .visitor-inst { font-size: 0.85rem; color: #64748b; display: block; }
+    .visitor-date { font-size: 0.8rem; color: var(--primary-blue); background: rgba(59, 130, 246, 0.1); padding: 4px 8px; border-radius: 4px; }
+
+    footer {
+      background-color: #050811;
+      color: #64748b;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      margin-top: 4rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* ================= RESPONSIVE (no afecta escritorio) ================= */
+    @media (max-width: 900px) {
+      header { padding: 0.7rem 1rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      nav { width: 100%; }
+      nav ul { flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      nav ul::-webkit-scrollbar { display: none; }
+      nav li { flex: 0 0 auto; }
+      nav a { padding: 10px 8px; white-space: nowrap; }
+      .btn-tema { padding: 10px 14px; min-height: 40px; }
+      [id] { scroll-margin-top: 110px; }
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1rem; }
+      .hero { padding: 3.5rem 1rem; }
+      .hero h2 { font-size: 1.9rem; }
+      .hero p { font-size: 1rem; }
+      .container { margin: 1.5rem auto; padding: 0 0.75rem; }
+      section { padding: 1.25rem; margin-bottom: 1.5rem; }
+      .separador-seccion { padding: 1.5rem 1rem; margin-bottom: 1.5rem; }
+      .separador-seccion h2 { font-size: 1.3rem; }
+      h2.title { font-size: 1.15rem; align-items: flex-start; }
+      .card[style*="padding"] { padding: 1.25rem !important; }
+      .btn-museo, .btn-abrir-form { width: 100%; justify-content: center; text-align: center; padding: 14px 16px; }
+      form input, form textarea, form select { font-size: 16px; }
+      form input[type="datetime-local"] { min-width: 0; max-width: 100%; }
+      .visitor-item { flex-wrap: wrap; gap: 6px; }
+      .visitor-item > div { min-width: 0; overflow-wrap: anywhere; }
+      footer { padding: 2rem 1rem; }
+    }
+  </style>
 </head>
 <body>
 
   <!-- NAVBAR CON TODAS LAS SECCIONES -->
   <header>
     <h1><i class="fa-solid fa-monument"></i> Restauradores de la Memoria</h1>
-    <nav id="menu-principal" aria-label="Principal">
+    <nav>
       <ul>
         <li><a href="#inicio"><i class="fa-solid fa-house"></i> Inicio</a></li>
         <li><a href="#proyecto"><i class="fa-solid fa-book-open"></i> Proyecto</a></li>
-        <li><a href="#museo"><i class="fa-solid fa-cube"></i> Museo 3D</a></li>
+        <li><a href="#museos"><i class="fa-solid fa-cube"></i> Museos</a></li>
         <li><a href="#salidas"><i class="fa-solid fa-location-dot"></i> Salidas</a></li>
         <li><a href="#fechas"><i class="fa-solid fa-calendar-days"></i> Fechas</a></li>
         <li><a href="#eventos"><i class="fa-solid fa-bullhorn"></i> Eventos</a></li>
         <li><a href="#premios"><i class="fa-solid fa-trophy"></i> Premios</a></li>
         <li><a href="#alianzas"><i class="fa-solid fa-handshake"></i> Alianzas</a></li>
-        <li><a href="#galeria"><i class="fa-solid fa-images"></i> Galería</a></li>
-        <li><a href="#gestion"><i class="fa-solid fa-database"></i> Gestión DB</a></li>
+        <li><a href="#galeria"><i class="fa-solid fa-photo-film"></i> Galería</a></li>
         <li><a href="#contacto"><i class="fa-solid fa-envelope"></i> Contacto</a></li>
+        <!-- Botón de Modo Claro / Oscuro -->
+        <li><button class="btn-tema" onclick="alternarTema()"><i class="fa-solid fa-circle-half-stroke"></i> Tema</button></li>
       </ul>
     </nav>
-    <div class="header-tools">
-      <button type="button" class="theme-toggle" id="btn-tema" role="switch" aria-checked="false" aria-label="Modo noche" title="Cambiar entre modo día y modo noche">
-        <i class="fa-solid fa-sun" aria-hidden="true"></i>
-        <i class="fa-solid fa-moon" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="menu-toggle" id="btn-menu" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">
-        <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
-    </div>
   </header>
 
-  <!-- HERO BANNER -->
+  <!-- HERO BANNER (SIN BOTÓN) -->
   <div class="hero" id="inicio">
     <span class="hero-badge">Colegio Tom Adams IED</span>
     <h2>Voces que se resisten al silencio</h2>
-    <p>Portal Institucional y Galería Virtual Inmersiva dedicada a la preservación de la memoria histórica y la convivencia escolar.</p>
-    <a href="#museo" class="btn-museo"><i class="fa-solid fa-vr-cardboard"></i> Explorar Galería 3D</a>
+    <p>Portal Institucional y Salas Virtuales Inmersivas dedicadas a la preservación de la memoria histórica y la convivencia escolar.</p>
   </div>
 
   <div class="container">
@@ -69,13 +423,29 @@
       <p>Es una iniciativa pedagógica del Colegio Tom Adams IED para divulgar y gestionar la construcción de memoria histórica, convivencia y paz a través de expresiones artísticas, salidas pedagógicas y tecnologías inmersivas.</p>
     </section>
 
-    <!-- 2. MUSEO 3D -->
-    <section id="museo">
-      <h2 class="title"><i class="fa-solid fa-cubes"></i> 2. Museo Escolar de la Memoria (Virtual 3D)</h2>
-      <p>Explora la sala interactiva tridimensional. Usa el mouse para orientar la vista y las teclas <strong>W, A, S, D</strong> para desplazarte por la galería.</p>
+    <!-- 2. MUSEOS (CON LOS 3 BOTONES DE SALAS) -->
+    <section id="museos">
+      <h2 class="title"><i class="fa-solid fa-cubes"></i> 2. Salas de Museos Virtuales 3D</h2>
+      <p>Elige una de las salas virtuales disponibles para explorar las exposiciones inmersivas en 3D:</p>
 
-      <div class="iframe-wrapper">
-        <iframe src="museo3d.html" title="Museo Virtual 3D"></iframe>
+      <div class="grid" style="margin-top: 2rem;">
+        <div class="card" style="text-align: center; padding: 2rem;">
+          <h3 style="color: #38bdf8; margin-bottom: 1rem;"><i class="fa-solid fa-landmark"></i> Museo Restauradores Memoria</h3>
+          <p style="margin-bottom: 1.5rem;">Exposición central dedicada a los años anteriores y monumentos históricos.</p>
+          <a href="museoRestauradoresMemoria-años anteriores.html" target="_blank" class="btn-museo"><i class="fa-solid fa-vr-cardboard"></i> Ingresar al Museo</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 2rem;">
+          <h3 style="color: #c084fc; margin-bottom: 1rem;"><i class="fa-solid fa-vr-cardboard"></i> Museo Melancolía (Parte 1)</h3>
+          <p style="margin-bottom: 1.5rem;">Sala 1 con obras interactivas y la pieza especial del museo nacional.</p>
+          <a href="museoMelancolia-parte1.html" target="_blank" class="btn-museo" style="background-color: #9333ea;"><i class="fa-solid fa-vr-cardboard"></i> Ingresar a Parte 1</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 2rem;">
+          <h3 style="color: #c084fc; margin-bottom: 1rem;"><i class="fa-solid fa-vr-cardboard"></i> Museo Melancolía (Parte 2)</h3>
+          <p style="margin-bottom: 1.5rem;">Sala 2 de continuidad con colecciones de obras patrimoniales.</p>
+          <a href="museoMelancolia-parte2.html" target="_blank" class="btn-museo" style="background-color: #9333ea;"><i class="fa-solid fa-vr-cardboard"></i> Ingresar a Parte 2</a>
+        </div>
       </div>
     </section>
 
@@ -84,21 +454,21 @@
       <h2 class="title"><i class="fa-solid fa-route"></i> 3. Salidas Pedagógicas</h2>
       <div class="grid">
         <div class="card">
-          <img class="card-img" src="https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=600&q=80" alt="Centro de Memoria">
+          <img class="card-img" src="assets/salidas-centro-memoria.jpg" alt="Centro de Memoria">
           <div class="card-content">
             <h3><i class="fa-solid fa-landmark"></i> Centro de Memoria</h3>
             <p>Visitas pedagógicas guiadas al Eje de la Memoria, Paz y Reconciliación.</p>
           </div>
         </div>
         <div class="card">
-          <img class="card-img" src="https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=600&q=80" alt="Museo Autoconstruida">
+          <img class="card-img" src="assets/salidas-museo-autoconstruida.jpg" alt="Museo Autoconstruida">
           <div class="card-content">
             <h3><i class="fa-solid fa-city"></i> Museo Autoconstruida</h3>
             <p>Recorridos territoriales comunitarios en la localidad de Ciudad Bolívar.</p>
           </div>
         </div>
         <div class="card">
-          <img class="card-img" src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80" alt="Casa MAFAPO">
+          <img class="card-img" src="assets/salidas-casa-mafapo.jpg" alt="Casa MAFAPO">
           <div class="card-content">
             <h3><i class="fa-solid fa-heart-pulse"></i> Casa MAFAPO</h3>
             <p>Encuentros de memoria viva y diálogo directo con la organización MAFAPO.</p>
@@ -256,6 +626,27 @@
   </footer>
 
   <script>
+    // Función para alternar entre el modo claro y oscuro
+  function alternarTema() {
+    const html = document.documentElement;
+    const temaActual = html.getAttribute('data-theme');
+    
+    if (temaActual === 'light') {
+      html.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      html.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+  }
+
+  // Cargar la preferencia de tema guardada del usuario automáticamente
+  window.addEventListener('DOMContentLoaded', () => {
+    const temaGuardado = localStorage.getItem('theme');
+    if (temaGuardado === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  });
     // Función para desplegar u ocultar los formularios de gestión
     function toggleFormularios() {
       const seccion = document.getElementById('seccion-formularios');
@@ -299,11 +690,12 @@
         return;
       }
 
+      const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       visitorList.innerHTML = data.map(v => `
         <li class="visitor-item">
           <div>
-            <span class="visitor-name">${v.nombre}</span>
-            <span class="visitor-inst">${v.institucion || 'Sin institución'}</span>
+            <span class="visitor-name">${esc(v.nombre)}</span>
+            <span class="visitor-inst">${esc(v.institucion) || 'Sin institución'}</span>
           </div>
           <span class="visitor-date">${new Date(v.created_at).toLocaleDateString('es-CO')}</span>
         </li>
