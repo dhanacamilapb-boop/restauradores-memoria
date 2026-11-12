@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Museo Restauradores Memoria - Años Anteriores</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2097/2097276.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- 1. Cargamos A-Frame de forma limpia -->
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+  <!-- 2. Los componentes de A-Frame van en su propio script independiente -->
+  <script>
+    AFRAME.registerComponent('click-obra', {
+      schema: {
+        nombre: {type: 'string', default: ''},
+        modelId: {type: 'string', default: ''}
+      },
+      init: function () {
+        var data = this.data;
+        this.el.addEventListener('click', function () {
+          window.seleccionarObra(data.nombre, data.modelId);
+        });
+      }
+    });
+
+    // Componente para rotación continua mientras se mantiene el cursor sobre el modelo
+    AFRAME.registerComponent('girar-al-mirar', {
+      init: function () {
+        this.mirando = false;
+        this.el.addEventListener('mouseenter', () => { this.mirando = true; });
+        this.el.addEventListener('mouseleave', () => { this.mirando = false; });
+      },
+      tick: function (time, timeDelta) {
+        if (this.mirando) {
+          this.el.object3D.rotation.y += 0.03; 
+        }
+      }
+    });
+  </script>
+
+  <style>
+    #loader {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #0b0f19; z-index: 9999; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; color: white; transition: opacity 0.5s ease;
+    }
+    .spinner {
+      width: 60px; height: 60px; border: 5px solid rgba(56, 189, 248, 0.2);
+      border-top: 5px solid #38bdf8; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background-color: #0b0f19; font-family: 'Rajdhani', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <!-- PANEL FLOTANTE AL CLICKEAR UNA OBRA -->
+  <div id="info-panel" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1px solid #38bdf8; padding: 14px 24px; border-radius: 12px; color: white; display: none; z-index: 100; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
+    <h3 id="obra-titulo" style="margin:0 0 5px 0; color:#38bdf8;">Obra Seleccionada</h3>
+    <p style="margin:0 0 8px 0; font-size: 0.9rem; color:#cbd5e1;">Has seleccionado este modelo 3D histórico.</p>
+    <button onclick="verModeloSolo()" style="background: #38bdf8; border: none; padding: 8px 16px; margin: 4px; color: #0b0f19; font-weight: bold; border-radius: 6px; cursor: pointer; font-family: 'Rajdhani', sans-serif;">Abrir Archivo 3D</button>
+    <button class="btn-cerrar" onclick="cerrarPanel()" style="background: #ef4444; border: none; padding: 8px 16px; margin: 4px; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; font-family: 'Rajdhani', sans-serif;">Cerrar</button>
+  </div>
+
+  <!-- PANTALLA DE CARGA PROGRESIVA -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <h2>Cargando Archivo Histórico en 3D...</h2>
+    <p style="color: #94a3b8;">Por favor espera un momento</p>
+  </div>
+
+  <!-- Se añadió vr-mode-ui="enabled: true" para soporte de visores y móviles -->
+  <a-scene embedded vr-mode-ui="enabled: true" style="width: 100%; height: 100%;">
+    <a-assets>
+      <a-asset-item id="modelo-1" src="assets/modelos/modelo1.glb"></a-asset-item>
+      <a-asset-item id="modelo-2" src="assets/modelos/modelo2.glb"></a-asset-item>
+      <a-asset-item id="modelo-3" src="assets/modelos/modelo3.glb"></a-asset-item>
+      <a-asset-item id="modelo-4" src="assets/modelos/modelo4.glb"></a-asset-item>
+      <a-asset-item id="modelo-5" src="assets/modelos/modelo5.glb"></a-asset-item>
+      <a-asset-item id="modelo-6" src="assets/modelos/modelo6.glb"></a-asset-item>
+      <a-asset-item id="modelo-7" src="assets/modelos/modelo7.glb"></a-asset-item>
+      <a-asset-item id="modelo-8" src="assets/modelos/model8.glb"></a-asset-item>
+      <a-asset-item id="modelo-9" src="assets/modelos/model9.glb"></a-asset-item>
+      <img id="mural-paz" src="assets/mural-paz.jpg">
+    </a-assets>
+
+    <a-entity id="rig" position="0 1 0">
+      <a-camera look-controls wasd-controls="fly: false">
+        <a-cursor color="#ef4444" fuse="false" raycaster="objects: .clickable, .girable"></a-cursor>
+      </a-camera>
+    </a-entity>
+
+    <a-light type="ambient" color="#ffffff" intensity="0.8"></a-light>
+    <a-light type="directional" color="#ffffff" intensity="0.6" position="0 6 5"></a-light>
+    <a-light type="directional" color="#94a3b8" intensity="0.3" position="-4 3 -2"></a-light>
+    <a-light type="directional" color="#94a3b8" intensity="0.3" position="4 3 -2"></a-light>
+    <a-light type="point" color="#e9d5ff" intensity="1.5" distance="8" position="0 2.5 0"></a-light>
+    <a-light type="point" color="#38bdf8" intensity="2.2" distance="10" position="0 3 0"></a-light>
+    <a-light type="point" color="#ffffff" intensity="1.8" distance="12" position="0 4 -3"></a-light>
+
+    <a-sky color="#0b0f19"></a-sky>
+
+    <a-cylinder position="0 0 0" radius="9" height="0.1" color="#1e293b" metalness="0.2" roughness="0.5"></a-cylinder>
+
+    <a-plane position="0 3.5 -8.5" rotation="0 0 0" width="14" height="3.5" material="src: #mural-paz; shader: flat; npot: true"></a-plane>
+    <a-plane position="0 3.5 -8.51" width="14.4" height="3.7" color="#38bdf8"></a-plane>
+
+    <a-plane position="0 5.5 -8.4" width="9" height="0.9" color="#1e293b">
+      <a-text value="MUSEO RESTAURADORES MEMORIA - ANOS ANTERIORES" align="center" color="#38bdf8" width="8" font="exo2bold" position="0 0 0.01"></a-text>
+    </a-plane>
+
+    <!-- Modelos del 1 al 9 -->
+    <a-entity class="clickable" click-obra="nombre: Obra 1; modelId: #modelo-1" position="0 0 -6">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-1" position="0 1.2 0" scale="2.5 2.5 2.5" rotation="0 275 0"></a-entity>
+      <a-box position="0 0.25 0.9" rotation="-30 0 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 1" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 2; modelId: #modelo-2" position="3.86 0 -4.60">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-2" position="0 1.5 0" scale="1.5 1.5 1.5" rotation="0 -135 0"></a-entity>
+      <a-box position="-0.58 0.25 0.69" rotation="-30 -40 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 2" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 3; modelId: #modelo-3" position="5.91 0 -1.04">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-3" position="0 1.2 0" scale="2 2 2" rotation="0 -190 0"></a-entity>
+      <a-box position="-0.89 0.25 0.16" rotation="-30 -80 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 3" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 4; modelId: #modelo-4" position="5.20 0 3.00">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-4" position="0 1.2 0" scale="2 2 2" rotation="0 -225 0"></a-entity>
+      <a-box position="-0.78 0.25 -0.45" rotation="-30 -120 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 4" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 5; modelId: #modelo-5" position="2.05 0 5.64">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-5" position="0 1.8 0" scale="2 2 2" rotation="0 -260 0"></a-entity>
+      <a-box position="-0.31 0.25 -0.85" rotation="-30 -160 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 5" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 6; modelId: #modelo-6" position="-2.05 0 5.64">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-6" position="-0.2 1.8 0" scale="2 2 2" rotation="0 -310 0"></a-entity>
+      <a-box position="0.31 0.25 -0.85" rotation="-30 -200 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 6" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 7; modelId: #modelo-7" position="-5.20 0 3.00">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-7" position="0 1.5 0" scale="2 2 2" rotation="0 -340 0"></a-entity>
+      <a-box position="0.78 0.25 -0.45" rotation="-30 -240 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 7" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 8; modelId: #modelo-8" position="-5.91 0 -1.04">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#c084fc"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-8" position="0 2 0" scale="2 2 2" rotation="0 -20 0"></a-entity>
+      <a-box position="0.89 0.25 0.16" rotation="-30 -280 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 8" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity class="clickable" click-obra="nombre: Obra 9; modelId: #modelo-9" position="-3.86 0 -4.60">
+      <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e293b" metalness="0.4" roughness="0.3"></a-cylinder>
+      <a-cylinder position="0 0.81 0" radius="0.82" height="0.02" color="#38bdf8"></a-cylinder>
+      <a-entity class="girable" girar-al-mirar gltf-model="#modelo-9" position="0 1.9 0" scale="2 2 2" rotation="0 -60 0"></a-entity>
+      <a-box position="0.58 0.25 0.69" rotation="-30 -320 0" width="1.4" height="0.35" depth="0.05" color="#020617">
+        <a-text value="Obra 9" align="center" color="#ffffff" width="3" font="exo2bold" position="0 0 0.03"></a-text>
+      </a-box>
+    </a-entity>
+  </a-scene>
+
+  <!-- SCRIPT PARA CONTROL DE EVENTOS, MODAL Y CARGA -->
+  <script>
+    let obraActualSeleccionada = "";
+
+    window.seleccionarObra = function(nombre, modelId) {
+      obraActualSeleccionada = modelId;
+      document.getElementById('obra-titulo').textContent = nombre;
+      document.getElementById('info-panel').style.display = 'block';
+    };
+
+    function cerrarPanel() {
+      document.getElementById('info-panel').style.display = 'none';
+    }
+
+    function verModeloSolo() {
+      if (!obraActualSeleccionada) return;
+      const assetItem = document.querySelector(obraActualSeleccionada);
+      if (assetItem) {
+        const srcUrl = assetItem.getAttribute('src');
+        window.open(srcUrl, '_blank');
+      }
+    }
+
+    window.addEventListener('load', () => {
+      const scene = document.querySelector('a-scene');
+      if (scene.hasLoaded) {
+        ocultarLoader();
+      } else {
+        scene.addEventListener('loaded', ocultarLoader);
+      }
+    });
+
+    function ocultarLoader() {
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+      }
+    }
+  </script>
+</body>
+</html>

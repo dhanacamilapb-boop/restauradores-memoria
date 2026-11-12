@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restauradores de la Memoria | Colegio Tom Adams IED</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2097/2097276.png">
+
+  <!-- Fuentes e Íconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SDK Oficial de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ================= SISTEMA DE TEMAS Y VARIABLES (UNIFICADO) ================= */
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: #151c2c;
+      --card-border: #232d42;
+      --primary-blue: #38bdf8;
+      --primary-blue-hover: #2563eb;
+      --accent-red: #ef4444;
+      --accent-red-hover: #dc2626;
+      --text-main: #94a3b8;
+      --text-title: #f8fafc;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+      --shadow-md: 0 6px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,0.6);
+    }
+
+    [data-theme="light"] {
+      --bg-dark: #f1f5f9;       /* Fondo gris suave moderno */
+      --card-bg: #e2e8f0;       /* Tarjetas en gris intermedio estético */
+      --card-border: #cbd5e1;   /* Bordes más definidos */
+      --text-main: #334155;     /* Texto principal legible */
+      --text-title: #0f172a;    /* Títulos oscuros marcados */
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    [id] { scroll-margin-top: 80px; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* HEADER Y NAVEGACIÓN */
+    header {
+      background-color: var(--card-bg);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 0.9rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-title);
+    }
+
+    header h1 i { color: var(--accent-red); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.82rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    nav a:hover { color: var(--text-title); }
+
+    /* BOTÓN DE TEMA INTERACTIVO (SOL / LUNA) */
+    .btn-tema {
+      background: var(--card-border);
+      color: var(--text-title);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-tema:hover {
+      background: var(--primary-blue);
+      color: #0b0f19;
+      transform: scale(1.05);
+    }
+    .btn-tema i { transition: transform 0.5s ease; }
+    [data-theme="light"] .btn-tema i { transform: rotate(180deg); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, rgba(11, 15, 25, 0.92), rgba(30, 58, 138, 0.85)), 
+                  url('https://colegiotomadams.edu.co/wp-content/uploads/2021/09/cropped-header.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      padding: 6rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .hero-badge {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--accent-red);
+      color: #fca5a5;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero h2 { font-size: 2.8rem; margin: 0 0 1rem 0; font-weight: 800; color: #ffffff; }
+    .hero p { font-size: 1.15rem; color: #cbd5e1; max-width: 650px; margin: 0 auto; }
+
+    .btn-museo {
+      background-color: var(--accent-red);
+      color: white;
+      padding: 14px 32px;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-museo:hover {
+      background-color: var(--accent-red-hover);
+      transform: translateY(-2px);
+    }
+
+    .container { max-width: 1100px; margin: 3rem auto; padding: 0 1.5rem; }
+
+    section {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    h2.title {
+      color: var(--text-title);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+    }
+
+    h2.title i { color: var(--primary-blue); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      background-color: var(--bg-dark);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--primary-blue); }
+
+    .card-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+    }
+
+    .card-content { padding: 1.25rem; }
+    .card-content h3 { margin: 0 0 0.5rem 0; color: var(--primary-blue); font-size: 1.05rem; }
+    .card-content p { color: var(--text-main); margin: 0; }
+
+    .styled-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: 15px;
+    }
+
+    .styled-list li {
+      background: var(--bg-dark);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-blue);
+      font-size: 0.95rem;
+      color: var(--text-title);
+    }
+
+    /* SEPARADOR Y BOTÓN DESPLEGABLE */
+    .separador-seccion {
+      background: linear-gradient(135deg, var(--card-bg), var(--bg-dark));
+      border: 1px solid var(--card-border);
+      padding: 3rem;
+      text-align: center;
+      border-radius: 16px;
+      margin-bottom: 2.5rem;
+    }
+
+    .separador-seccion h2 { color: var(--text-title); margin-top: 0; font-size: 1.8rem; }
+    .separador-seccion p { color: var(--text-main); margin-bottom: 1.5rem; }
+
+    .btn-abrir-form {
+      background-color: var(--primary-blue);
+      color: white;
+      padding: 12px 28px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s;
+      font-size: 1rem;
+    }
+
+    .btn-abrir-form:hover { background-color: var(--primary-blue-hover); }
+
+    /* SECCIÓN DE FORMULARIOS */
+    #seccion-formularios {
+      display: none;
+    }
+
+    /* ESTILOS DE FORMULARIOS */
+    form label { font-weight: 600; font-size: 0.9rem; color: var(--text-title); display: block; margin-top: 10px; }
+    form input, form textarea, form select {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 16px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background-color: var(--bg-dark);
+      color: var(--text-title);
+      font-size: 0.95rem;
+    }
+
+    form input:focus, form textarea:focus, form select:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+    }
+
+    .status-msg {
+      display: none;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .status-success {
+      background-color: rgba(34, 197, 94, 0.15);
+      border: 1px solid #22c55e;
+      color: #4ade80;
+      display: block;
+    }
+
+    .status-error {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      display: block;
+    }
+
+    .visitor-item {
+      padding: 0.9rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .visitor-item:last-child { border-bottom: none; }
+    .visitor-name { color: var(--text-title); font-weight: 600; }
+    .visitor-inst { font-size: 0.85rem; color: var(--text-main); display: block; }
+    .visitor-date { font-size: 0.8rem; color: var(--primary-blue); background: rgba(56, 189, 248, 0.1); padding: 4px 8px; border-radius: 4px; }
+
+    footer {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      text-align: center;
+      padding: 2.5rem 1rem;
+      margin-top: 4rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .texto-extra { margin: 1rem 0 0 0; }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 900px) {
+      header { padding: 0.7rem 1rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      nav { width: 100%; }
+      nav ul { flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      nav ul::-webkit-scrollbar { display: none; }
+      nav li { flex: 0 0 auto; }
+      nav a { padding: 10px 8px; white-space: nowrap; }
+      .btn-tema { padding: 10px 14px; min-height: 40px; }
+      [id] { scroll-margin-top: 110px; }
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1rem; }
+      .hero { padding: 3.5rem 1rem; }
+      .hero h2 { font-size: 1.9rem; }
+      .hero p { font-size: 1rem; }
+      .container { margin: 1.5rem auto; padding: 0 0.75rem; }
+      section { padding: 1.25rem; margin-bottom: 1.5rem; }
+      .separador-seccion { padding: 1.5rem 1rem; margin-bottom: 1.5rem; }
+      .separador-seccion h2 { font-size: 1.3rem; }
+      h2.title { font-size: 1.15rem; align-items: flex-start; }
+      .btn-museo, .btn-abrir-form { width: 100%; justify-content: center; text-align: center; padding: 14px 16px; }
+      form input, form textarea, form select { font-size: 16px; }
+      .visitor-item { flex-wrap: wrap; gap: 6px; }
+      footer { padding: 2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR CON TODAS LAS SECCIONES -->
+  <header>
+    <h1><i class="fa-solid fa-monument"></i> Restauradores de la Memoria</h1>
+    <nav>
+      <ul>
+        <li><a href="#inicio"><i class="fa-solid fa-house"></i> Inicio</a></li>
+        <li><a href="#proyecto"><i class="fa-solid fa-book-open"></i> Proyecto</a></li>
+        <li><a href="#museos"><i class="fa-solid fa-cube"></i> Museos</a></li>
+        <li><a href="#salidas"><i class="fa-solid fa-location-dot"></i> Salidas</a></li>
+        <li><a href="#fechas"><i class="fa-solid fa-calendar-days"></i> Fechas</a></li>
+        <li><a href="#eventos"><i class="fa-solid fa-bullhorn"></i> Eventos</a></li>
+        <li><a href="#premios"><i class="fa-solid fa-trophy"></i> Premios</a></li>
+        <li><a href="#alianzas"><i class="fa-solid fa-handshake"></i> Alianzas</a></li>
+        <li><a href="#galeria"><i class="fa-solid fa-photo-film"></i> Galería</a></li>
+        <li><a href="#contacto"><i class="fa-solid fa-envelope"></i> Contacto</a></li>
+        <!-- Botón de Modo Claro / Oscuro -->
+        <li>
+        <button class="btn-tema" id="btnTema" onclick="alternarTema()">
+          <i class="fa-solid fa-moon" id="iconoTema"></i> <span id="textoTema">Tema</span>
+        </button>
+      </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- HERO BANNER (SIN BOTÓN) -->
+  <div class="hero" id="inicio">
+    <span class="hero-badge">Colegio Tom Adams IED</span>
+    <h2>Voces que se resisten al silencio</h2>
+    <p>Portal Institucional y Salas Virtuales Inmersivas dedicadas a la preservación de la memoria histórica y la convivencia escolar.</p>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. PROYECTO -->
+    <section id="proyecto">
+      <h2 class="title"><i class="fa-solid fa-circle-info"></i> ¿Qué es Restauradores de la Memoria?</h2>
+      <p>Es una iniciativa pedagógica del Colegio Tom Adams IED para divulgar y gestionar la construcción de memoria histórica, convivencia y paz a través de expresiones artísticas, salidas pedagógicas y tecnologías inmersivas.</p>
+      <p class="texto-extra">La experiencia nació a finales de 2021 en el Colegio Tom Adams IED, en la localidad de Kennedy, para ofrecer a los estudiantes de grado décimo y undécimo un espacio de reflexión que fortalezca el pensamiento crítico y las competencias ciudadanas frente al análisis y la comprensión del conflicto armado en Colombia.</p>
+      <p class="texto-extra">Se inspira en el Kintsugi, la técnica japonesa que repara piezas de cerámica rotas resaltando sus grietas en lugar de esconderlas. Esa idea se convirtió en la metáfora del Museo Escolar de la Memoria, donde los estudiantes muestran sus lecturas e interpretaciones del conflicto y el arte se usa para restaurar la memoria individual, colectiva e histórica.</p>
+      <p class="texto-extra">Gracias al éxito de la primera versión del Museo, en 2022 el proyecto fue reconocido institucionalmente y convirtió las clases de Ética y Valores Humanos en espacios formativos de Cátedra de Paz. Su objetivo general es desarrollar iniciativas escolares que construyan paz mediante procesos de memoria, dentro del currículo, la enseñanza-aprendizaje y el proyecto de vida de los estudiantes.</p>
+      <p class="texto-extra">Además busca crear espacios de formación que vean la ciudad como aula, con salidas pedagógicas a lugares de memoria en Bogotá; fortalecer la Cátedra de la Paz en el área de Ética y Valores Humanos; consolidar el Museo Escolar de la Memoria como espacio de diálogo y reflexión; invitar a líderes sociales, políticos y sindicales para generar un diálogo de saberes; y escuchar las voces de la comunidad educativa para formular nuevas estrategias de análisis y discusión.</p>
+    </section>
+
+    <!-- 2. MUSEOS (CON LOS 3 BOTONES DE SALAS) -->
+    <section id="museos">
+      <h2 class="title"><i class="fa-solid fa-cubes"></i> 2. Salas de Museos Virtuales 3D</h2>
+      <p>Elige una de las salas virtuales disponibles para explorar las exposiciones inmersivas en 3D:</p>
+
+      <div class="grid" style="margin-top: 2rem;">
+        <div class="card" style="text-align: center; padding: 2rem;">
+          <h3 style="color: #38bdf8; margin-bottom: 1rem;"><i class="fa-solid fa-landmark"></i> Museo Restauradores Memoria</h3>
+          <p style="margin-bottom: 1.5rem;">Exposición central dedicada a los años anteriores y monumentos históricos.</p>
+          <a href="museoRestauradoresMemoria-años anteriores.html" target="_blank" class="btn-museo"><i class="fa-solid fa-vr-cardboard"></i> Ingresar al Museo</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 2rem;">
+          <h3 style="color: #c084fc; margin-bottom: 1rem;"><i class="fa-solid fa-vr-cardboard"></i> Museo Melancolía (Parte 1)</h3>
+          <p style="margin-bottom: 1.5rem;">Sala 1 con obras interactivas y la pieza especial del museo nacional.</p>
+          <a href="museoMelancolia-parte1.html" target="_blank" class="btn-museo" style="background-color: #9333ea;"><i class="fa-solid fa-vr-cardboard"></i> Ingresar a Parte 1</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 2rem;">
+          <h3 style="color: #c084fc; margin-bottom: 1rem;"><i class="fa-solid fa-vr-cardboard"></i> Museo Melancolía (Parte 2)</h3>
+          <p style="margin-bottom: 1.5rem;">Sala 2 de continuidad con colecciones de obras patrimoniales.</p>
+          <a href="museoMelancolia-parte2.html" target="_blank" class="btn-museo" style="background-color: #9333ea;"><i class="fa-solid fa-vr-cardboard"></i> Ingresar a Parte 2</a>
+        </div>
+      </div>
+
+      <p class="texto-extra">Hasta ahora se han realizado cinco versiones presenciales del Museo Escolar de la Memoria, bajo el lema «Arte y Memoria»: septiembre de 2021, octubre de 2022, octubre de 2023, octubre de 2024 y noviembre de 2025. La sexta emisión se programó para finales de octubre de 2026, con la que se espera reafirmar el arte como herramienta pedagógica para restaurar la memoria y construir paz en y desde la escuela.</p>
+    </section>
+
+    <!-- 3. SALIDAS -->
+    <section id="salidas">
+      <h2 class="title"><i class="fa-solid fa-route"></i> 3. Salidas Pedagógicas</h2>
+      <p>Entre 2022 y 2026 los estudiantes han recorrido lugares de memoria de Bogotá para que la ciudad sea su aula: el CMPR en el Centro Histórico, la Casa de la Memoria de Suba, la Cervecería La Roja – Casa de la Paz (con firmantes del Acuerdo de Paz), el Museo de la Ciudad Autoconstruida en Ciudad Bolívar, el Eje de la Memoria del CNMH y la Casa de Memoria MAFAPO. También han vivido un encuentro intergeneracional con olla comunitaria y un reconocimiento del entorno escolar.</p>
+
+      <div class="grid">
+        <div class="card">
+          <img class="card-img" src="assets/salidas-centro-memoria.jpg" alt="Centro de Memoria">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-landmark"></i> Centro de Memoria</h3>
+            <p>Visitas pedagógicas guiadas al Eje de la Memoria, Paz y Reconciliación.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/salidas-museo-autoconstruida.jpg" alt="Museo Autoconstruida">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-city"></i> Museo Autoconstruida</h3>
+            <p>Recorridos territoriales comunitarios en la localidad de Ciudad Bolívar.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/salidas-casa-mafapo.jpg" alt="Casa MAFAPO">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-heart-pulse"></i> Casa MAFAPO</h3>
+            <p>Encuentros de memoria viva y diálogo directo con la organización MAFAPO.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FECHAS -->
+    <section id="fechas">
+      <h2 class="title"><i class="fa-solid fa-calendar-check"></i> 4. Fechas Conmemorativas</h2>
+      <ul class="styled-list">
+        <li><strong>12 de Febrero:</strong><br>Día de las Manos Rojas</li>
+        <li><strong>9 de Abril:</strong><br>Día Nacional de la Memoria y Solidaridad con las Víctimas</li>
+        <li><strong>25 de Mayo:</strong><br>Memorias Corporales</li>
+        <li><strong>31 de Agosto:</strong><br>Jornadas de No Violencia</li>
+      </ul>
+      <p class="texto-extra">Cada año el colegio vive estas fechas como jornadas de memoria dentro de la Cátedra de Paz. El 12 de febrero, Día de las Manos Rojas, se rechaza el reclutamiento de niños, niñas y jóvenes en la guerra. El 9 de abril se rinde homenaje a las víctimas del conflicto armado con actividades de reflexión y solidaridad. El 25 de mayo, con Memorias Corporales, los estudiantes usan el cuerpo y el arte para expresar la memoria. El 31 de agosto se dedica a jornadas de no violencia y a recordar a las personas desaparecidas.</p>
+      <p class="texto-extra">Estas conmemoraciones conectan lo que se aprende en clase con la comunidad: los estudiantes preparan muestras, intervenciones y conversatorios, y comparten con sus compañeros y familias lo que han investigado sobre el conflicto armado colombiano.</p>
+    </section>
+
+    <!-- 5. EVENTOS -->
+    <section id="eventos">
+      <h2 class="title"><i class="fa-solid fa-masks-theater"></i> 5. Visitas y Eventos Culturales</h2>
+      <p>Presentaciones teatrales, monólogos reflexivos, muestras artísticas con la Batucada Estudiantil y las jornadas institucionales "Museo de la Memoria a la Calle".</p>
+      <p class="texto-extra">Al museo han llegado visitas y actividades como una presentación de monólogo, Jesús Abad Colorado, un testimonio de una persona desmovilizada de las FARC-EP, la certificación ECO de la SED, el Primer Encuentro Internacional de Justicia Escolar Restaurativa (JER), un conversatorio con MAFAPO, la exposición de fotografía forense y la visita de la Unidad de Búsqueda de Personas dadas por Desaparecidas.</p>
+      <p class="texto-extra">La comunidad también ha salido del colegio con el primer y el segundo Museo de la Memoria a la Calle, los Encuentros Comunitarios de Entornos Escolares Inspiradores (SED) y el Festival de Arte de Kennedy. Con el Museo Nacional de Colombia ha participado en la formación in situ, en Bordado y Memoria con ASOMUJER y en la formación de Curaduría y Restauración, además del Conversatorio Memorias Afro.</p>
+    </section>
+
+    <!-- 6. PREMIOS -->
+    <section id="premios">
+      <h2 class="title"><i class="fa-solid fa-award"></i> 6. Reconocimientos Obtenidos</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-star"></i> Gala de los Mejores (SED)</h3>
+            <p>Premio categoría "El colegio, la Comunidad y la Ciudad" con incentivo de $3.800.000.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-seedling"></i> Alcaldía de Kennedy</h3>
+            <p>Apoyo a Semilleros de Paz por $7.600.000 para desarrollo tecnológico y comunitario.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-hands-holding-circle"></i> Entornos Inspiradores</h3>
+            <p>Reconocimiento Categoría 5 "Aliados por un entorno inspirador".</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-scroll"></i> Centro Nacional de Memoria Histórica (2026)</h3>
+            <p>Reconocimiento como Lugar de Memoria en Colombia (Museo Virtual), integrante de la Red Nacional de Colegios con Museos Escolares de Memoria y con Registro Especial de Archivos de DDHH y Memoria Histórica.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-microphone"></i> Presencia en medios</h3>
+            <p>Entrevista en City Tv (22 de marzo de 2024), participación en el evento «Incitar para la Paz» de la SED y entrevistas en la emisora Javeriana Estéreo (2025-2026).</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <h3><i class="fa-solid fa-graduation-cap"></i> Cualificación docente</h3>
+            <p>Diplomado en Memoria y Verdad del CNMH (2024) y Diplomado en Sistematización de Experiencias de Educación para la Paz (2026), del Instituto Colombo Alemán para la Paz, la Universidad Pedagógica Nacional y el Colectivo Montes de María.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. ALIANZAS -->
+    <section id="alianzas">
+      <h2 class="title"><i class="fa-solid fa-building-columns"></i> 7. Alianzas Institucionales</h2>
+      <p>Trabajo articulado con el Centro Nacional de Memoria Histórica (CNMH), Escuela Tecnológica Instituto Técnico Central (ETITC), Museo Nacional de Colombia, Universidad Javeriana y Secretaría de Educación del Distrito (SED).</p>
+      <p class="texto-extra">Con la ETITC, entre 2024 y 2026, se desarrollaron un objeto de memoria, esta página web, el Museo Virtual de la Memoria y espacios de formación entre pares. Con el Museo Nacional de Colombia se han realizado procesos de formación en curaduría y restauración y encuentros como Bordado y Memoria con ASOMUJER.</p>
+    </section>
+
+    <!-- 8. GALERÍA -->
+    <section id="galeria">
+      <h2 class="title"><i class="fa-solid fa-photo-film"></i> 8. Galería Multimedia</h2>
+      <p>Registro de exposiciones artísticas en cómic, puestas en escena teatrales y episodios radiales tipo podcast desarrollados por la comunidad escolar.</p>
+      <div class="grid">
+        <div class="card">
+          <img class="card-img" src="assets/imagen1.jpg" alt="Obras en exposición">
+          <div class="card-content"><h3>Obras en exposición</h3><p>Obras y piezas exhibidas en una sala del Museo Escolar de la Memoria.</p></div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/imagen2.jpg" alt="Cartel del Museo Escolar de la Memoria">
+          <div class="card-content"><h3>Museo Escolar de la Memoria</h3><p>Cartel del Museo Escolar de la Memoria del Colegio Tom Adams IED.</p></div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/imagen3.jpg" alt="Museo Nacional de Colombia">
+          <div class="card-content"><h3>Museo Nacional de Colombia</h3><p>Cartel del Museo Nacional de Colombia, aliado del proyecto en procesos de formación.</p></div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/imagen4.jpg" alt="Sala de exposición">
+          <div class="card-content"><h3>Sala de exposición</h3><p>Recorrido por una sala con las obras montadas para la muestra.</p></div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/imagen5.jpg" alt="Montaje de la muestra">
+          <div class="card-content"><h3>Montaje de la muestra</h3><p>Mesa con piezas y objetos de memoria dispuestos para la exposición.</p></div>
+        </div>
+        <div class="card">
+          <img class="card-img" src="assets/imagen6.jpg" alt="Puesta en escena teatral">
+          <div class="card-content"><h3>Puesta en escena</h3><p>Presentación teatral durante un evento del museo.</p></div>
+        </div>
+    </section>
+
+    <!-- SEPARADOR Y BOTÓN DESPLEGABLE DE GESTIÓN -->
+    <div class="separador-seccion" id="gestion">
+      <h2>ESPACIO PARA FORMULARIOS Y GESTIÓN</h2>
+      <p>Accede al panel interactivo para registrar obras, eventos, actividades y evidencias directamente en Supabase.</p>
+      <button class="btn-abrir-form" id="btnToggleFormularios" onclick="toggleFormularios()">
+        <i class="fa-solid fa-folder-plus"></i> Desplegar Formularios de Gestión
+      </button>
+    </div>
+
+    <!-- SECCIÓN DE FORMULARIOS MÚLTIPLES (Oculta al inicio) -->
+    <div id="seccion-formularios">
+      <section>
+        <h2 class="title"><i class="fa-solid fa-palette"></i> Registrar Obra / Exposición</h2>
+        <form id="form-obras">
+          <label>Título de la Obra *</label>
+          <input type="text" id="obra_titulo" required placeholder="Ej. Retratos de la Resiliencia">
+          <label>Autor</label>
+          <input type="text" id="obra_autor" placeholder="Nombre del autor o grupo">
+          <label>Descripción</label>
+          <textarea id="obra_desc" rows="3" placeholder="Detalles de la obra..."></textarea>
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Obra en DB</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="title"><i class="fa-solid fa-calendar-plus"></i> Registrar Evento</h2>
+        <form id="form-eventos">
+          <label>Título del Evento *</label>
+          <input type="text" id="evento_titulo" required placeholder="Ej. Conversatorio de Memoria">
+          <label>Descripción</label>
+          <textarea id="evento_desc" rows="3" placeholder="Descripción del evento..."></textarea>
+          <label>Fecha y Hora</label>
+          <input type="datetime-local" id="evento_fecha">
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Evento en DB</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="title"><i class="fa-solid fa-list-check"></i> Registrar Actividad</h2>
+        <form id="form-actividades">
+          <label>Nombre de la Actividad *</label>
+          <input type="text" id="act_nombre" required placeholder="Ej. Talleres de Modelado 3D">
+          <label>Estado</label>
+          <select id="act_estado">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Proceso">En Proceso</option>
+            <option value="Completado">Completado</option>
+          </select>
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Actividad en DB</button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="title"><i class="fa-solid fa-file-arrow-up"></i> Registrar Evidencia</h2>
+        <form id="form-evidencias">
+          <label>Título de la Evidencia *</label>
+          <input type="text" id="ev_titulo" required placeholder="Ej. Fotos del Laboratorio">
+          <label>Enlace del Archivo / URL</label>
+          <input type="text" id="ev_url" placeholder="https://...">
+          <button type="submit" class="btn-museo"><i class="fa-solid fa-floppy-disk"></i> Guardar Evidencia en DB</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- 9. CONTACTO Y REGISTRO DE VISITANTES -->
+    <section id="contacto">
+      <h2 class="title"><i class="fa-solid fa-address-card"></i> 9. Contacto y Registro de Visitantes</h2>
+      <form id="formVisita">
+        <label for="nombre">Nombre Completo *</label>
+        <input type="text" id="nombre" placeholder="Tu nombre completo" required>
+
+        <label for="correo">Correo Electrónico *</label>
+        <input type="email" id="correo" placeholder="ejemplo@correo.com" required>
+
+        <label for="inst">Institución / Entidad</label>
+        <input type="text" id="inst" placeholder="Ej. ETITC - Colegio Tom Adams">
+
+        <button type="submit" class="btn-museo"><i class="fa-solid fa-paper-plane"></i> Registrar Visita en Supabase</button>
+      </form>
+
+      <div id="status-msg" class="status-msg"></div>
+
+      <h3 style="color: var(--text-title); margin-top: 2rem; font-size: 1.1rem;"><i class="fa-solid fa-users"></i> Visitantes Registrados Recientemente</h3>
+      <ul id="visitor-list" class="visitor-list">
+        <li>Cargando visitantes...</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Portal Web Restauradores de la Memoria — Colegio Tom Adams IED</p>
+  </footer>
+
+  <script>
+  // Función mejorada para alternar entre tema oscuro y gris claro con iconos
+    function alternarTema() {
+      const html = document.documentElement;
+      const icono = document.getElementById('iconoTema');
+      const texto = document.getElementById('textoTema');
+      const temaActual = html.getAttribute('data-theme');
+      
+      if (temaActual === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        icono.className = 'fa-solid fa-sun';
+        texto.textContent = 'Claro';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        icono.className = 'fa-solid fa-moon';
+        texto.textContent = 'Oscuro';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Forzamos a que si no hay un tema guardado explícitamente, inicie en 'dark'
+      const temaGuardado = localStorage.getItem('theme') || 'dark';
+      const icono = document.getElementById('iconoTema');
+      const texto = document.getElementById('textoTema');
+
+      document.documentElement.setAttribute('data-theme', temaGuardado);
+
+      if (temaGuardado === 'light') {
+        if (icono) icono.className = 'fa-solid fa-sun';
+        if (texto) texto.textContent = 'Claro';
+      } else {
+        if (icono) icono.className = 'fa-solid fa-moon';
+        if (texto) texto.textContent = 'Oscuro';
+      }
+    });
+    // Función para desplegar u ocultar los formularios de gestión
+    function toggleFormularios() {
+      const seccion = document.getElementById('seccion-formularios');
+      const btn = document.getElementById('btnToggleFormularios');
+
+      if (seccion.style.display === 'block') {
+        seccion.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-folder-plus"></i> Desplegar Formularios de Gestión';
+      } else {
+        seccion.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-folder-minus"></i> Ocultar Formularios de Gestión';
+        seccion.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // CONEXIÓN CON SUPABASE
+    const SUPABASE_URL = 'https://hfueuperjaqgarcdwfet.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_72QMWHhecQBXyJ_Whng7Vw_MFT-Bfac';
+
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const form = document.getElementById('formVisita');
+    const statusMsg = document.getElementById('status-msg');
+    const visitorList = document.getElementById('visitor-list');
+
+    // Cargar visitantes
+    async function loadVisitors() {
+      const { data, error } = await _supabase
+        .from('Visitantes')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        console.error('Error al cargar la lista:', error.message);
+        visitorList.innerHTML = '<li style="color:#ef4444;">Error al conectar con la base de datos.</li>';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        visitorList.innerHTML = '<li>No hay visitantes registrados todavía.</li>';
+        return;
+      }
+
+      const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      visitorList.innerHTML = data.map(v => `
+        <li class="visitor-item">
+          <div>
+            <span class="visitor-name">${esc(v.nombre)}</span>
+            <span class="visitor-inst">${esc(v.institucion) || 'Sin institución'}</span>
+          </div>
+          <span class="visitor-date">${new Date(v.created_at).toLocaleDateString('es-CO')}</span>
+        </li>
+      `).join('');
+    }
+
+    // Registrar Visitante
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const correo = document.getElementById('correo').value;
+      const institucion = document.getElementById('inst').value;
+
+      statusMsg.className = 'status-msg';
+      statusMsg.textContent = 'Guardando en Supabase...';
+      statusMsg.style.display = 'block';
+
+      const { data, error } = await _supabase
+        .from('Visitantes')
+        .insert([{ nombre, correo, institucion }]);
+
+      if (error) {
+        statusMsg.className = 'status-msg status-error';
+        statusMsg.textContent = 'Error al registrar: ' + error.message;
+      } else {
+        statusMsg.className = 'status-msg status-success';
+        statusMsg.textContent = '¡Registro completado con éxito!';
+        form.reset();
+        loadVisitors();
+      }
+    });
+
+    // Guardar Obra
+    document.getElementById('form-obras').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('obras').insert([{
+        titulo: document.getElementById('obra_titulo').value,
+        autor: document.getElementById('obra_autor').value,
+        descripcion: document.getElementById('obra_desc').value
+      }]);
+      if (error) alert('Error al guardar obra: ' + error.message);
+      else { alert('¡Obra guardada con éxito en Supabase!'); document.getElementById('form-obras').reset(); }
+    });
+
+    // Guardar Evento
+    document.getElementById('form-eventos').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('eventos').insert([{
+        titulo_evento: document.getElementById('evento_titulo').value,
+        descripcion: document.getElementById('evento_desc').value,
+        fecha: document.getElementById('evento_fecha').value
+      }]);
+      if (error) alert('Error al guardar evento: ' + error.message);
+      else { alert('¡Evento guardado con éxito en Supabase!'); document.getElementById('form-eventos').reset(); }
+    });
+
+    // Guardar Actividad
+    document.getElementById('form-actividades').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('actividades').insert([{
+        nombre_actividad: document.getElementById('act_nombre').value,
+        estado: document.getElementById('act_estado').value
+      }]);
+      if (error) alert('Error al guardar actividad: ' + error.message);
+      else { alert('¡Actividad guardada con éxito en Supabase!'); document.getElementById('form-actividades').reset(); }
+    });
+
+    // Guardar Evidencia
+    document.getElementById('form-evidencias').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await _supabase.from('evidencias').insert([{
+        titulo: document.getElementById('ev_titulo').value,
+        enlace_archivo: document.getElementById('ev_url').value
+      }]);
+      if (error) alert('Error al guardar evidencia: ' + error.message);
+      else { alert('¡Evidencia guardada con éxito en Supabase!'); document.getElementById('form-evidencias').reset(); }
+    });
+
+    loadVisitors();
+  </script>
+</body>
+</html>
